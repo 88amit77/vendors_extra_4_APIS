@@ -1,0 +1,6 @@
+Django
+djangorestframework
+psycopg2-binary
+gunicorn
+requests
+django-rest-swagger

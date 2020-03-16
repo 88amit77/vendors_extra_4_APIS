@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  vendors_web:
+    build: ./vendors
+    volumes:
+      - .:/code
+    ports:
+      - 8001:8001
+    restart: always
+      
+  nginx:
+    build: ./web
+    ports:
+      - 8081:80
+    links:
+      - products_web
+    depends_on:
+      - products_web
