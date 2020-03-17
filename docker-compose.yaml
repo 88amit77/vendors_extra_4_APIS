@@ -3,6 +3,7 @@ version: '2'
 services:
   vendors_web:
     build: ./vendors
+    command: bash -c "python3 ./vendors/manage.py runserver 0.0.0.0:8001"
     volumes:
       - .:/code
     ports:

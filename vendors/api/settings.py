@@ -26,13 +26,7 @@ ROOT_URLCONF = 'api.urls'
 WSGI_APPLICATION = 'api.wsgi.application'
 
 DATABASES = {
-	'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'HOST': '172.17.0.1',
-        'PORT': 5432,
-    }
+
 }
 
 LANGUAGE_CODE = 'en-us'
