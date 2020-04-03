@@ -1,9 +1,9 @@
 from rest_framework import viewsets
-from rest_framework import permissions
 from .serializers import ListVendorSerializer, NewVendorDetailsSerializer
 from .models import NewVendorDetails
 from rest_framework.response import Response
 import requests
+
 
 class VendorListViewSet(viewsets.ViewSet):
     """
