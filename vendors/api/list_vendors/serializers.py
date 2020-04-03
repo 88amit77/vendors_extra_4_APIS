@@ -3,6 +3,7 @@ from .models import NewVendorDetails
 
 
 class ListVendorSerializer(serializers.Serializer):
+    vendor_id = serializers.IntegerField()
     user_id = serializers.IntegerField()
     user_name = serializers.CharField(max_length=200)
     email = serializers.EmailField()
@@ -13,7 +14,7 @@ class ListVendorSerializer(serializers.Serializer):
     current_status = serializers.CharField(max_length=200)
     currency = serializers.CharField(max_length=200)
     marketing_incharge_name = serializers.CharField(max_length=200)
-    brand_analyst_name = serializers.CharField(max_length=200)
+    brand_coordinators_name = serializers.CharField(max_length=200)
 
 
 class NewVendorDetailsSerializer(serializers.ModelSerializer):
