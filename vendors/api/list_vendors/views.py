@@ -10,6 +10,16 @@ class VendorListViewSet(viewsets.ViewSet):
     API endpoint that allows users to be viewed or edited.
     """
     def list(self, request):
+        token = request.META.get('HTTP_AUTHORIZATION')
+        auth_user = requests.get('http://172.17.0.1:8002/auth/users/me/', headers={'authorization': token}).json()
+        # return Response({'auth_user': auth_user})
+        permissions = []
+        for i in range(len(auth_user['user_permissions'])):
+            permissions.append(auth_user['user_permissions'][i]['codename'])
+        for i in range(len(auth_user['groups'])):
+            for j in range(len(auth_user['groups'][i]['permissions'])):
+                permissions.append(auth_user['groups'][i]['permissions'][j]['codename'])
+        permissions = set(permissions)
         vendors = NewVendorDetails.objects.all()
         data = []
         for i in range(len(vendors)):
@@ -42,7 +52,6 @@ class VendorListViewSet(viewsets.ViewSet):
                 'marketing_incharge_name': 'ABC',
                 'brand_analyst_name': 'ABC'
             }
-            token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTg0OTY3MDU5LCJqdGkiOiIzMGQwYTBiYjI3ZWM0YTgwODdkZWZmYWNlNmQ0ZDAyYyIsInVzZXJfaWQiOjF9.fTmnu_ub2Cj7ZevpCWMPCYiax8iH7587mlWeaZuvLaQ'
             user_response = dict(requests.get('http://172.17.0.1:8002/users/1/', headers={'authorization': 'Bearer '+token}).json())
             item['user_name'] = user_response['username']
             item['email'] = user_response['email']
