@@ -1,2 +1,3 @@
 .idea/
 .vscode/
+vendors/api/__pycache__/

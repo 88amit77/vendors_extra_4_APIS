@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from .models import NewVendorDetails
 
 
 class ListVendorSerializer(serializers.Serializer):
@@ -13,3 +14,9 @@ class ListVendorSerializer(serializers.Serializer):
     currency = serializers.CharField(max_length=200)
     marketing_incharge_name = serializers.CharField(max_length=200)
     brand_analyst_name = serializers.CharField(max_length=200)
+
+
+class NewVendorDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewVendorDetails
+        fields = '__all__'
