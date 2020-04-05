@@ -12,3 +12,9 @@ class VendorDocumentAuth(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_notification_delivered = models.BooleanField()
     ip_address = models.CharField(max_length=35, blank=True, null=True)
+
+
+
+#depemdent on new_vender_detail
+   # brand_id = models.IntegerField()
+    # vendor_id = models.IntegerField()
