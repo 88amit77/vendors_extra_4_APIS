@@ -18,3 +18,5 @@ class VendorDocumentAuth(models.Model):
 #depemdent on NewVendorDetails
    # brand_id = models.IntegerField()
    # vendor_id = models.IntegerField()
+
+

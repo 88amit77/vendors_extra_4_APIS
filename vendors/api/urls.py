@@ -3,7 +3,7 @@ from rest_framework_swagger.views import get_swagger_view
 from .brand_verification.views import VendorDocumentAuthViewSet,VendorDocumentAuthListViewSet
 from .list_vendors.views import VendorListViewSet, NewVendorDetailsViewSet
 from .brands.views import BrandViewSet
-from .mobile_ticket.views import MobileTicketListViewSet,MobileTicketDetailsViewSet
+from .mobile_ticket.views import MobileTicketListViewSet,MobileTicketDetailsViewSet,MobileTicketReplyViewSet,MobileTicketReplyListViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -14,6 +14,8 @@ router.register(r'List_brand_verification', VendorDocumentAuthListViewSet, basen
 router.register(r'brands', BrandViewSet, basename='brands')
 router.register(r'mobile_ticket', MobileTicketDetailsViewSet, basename='mobile_ticket')
 router.register(r'list_mobile_ticket', MobileTicketListViewSet, basename='list_mobile_ticket')
+router.register(r'mobile_ticket_reply', MobileTicketReplyViewSet, basename='mobile_ticket_reply')
+router.register(r'list_mobile_ticket_reply', MobileTicketReplyListViewSet, basename='list_mobile_ticket_reply')
 # TODO: add here your API URLs
 
 schema_view = get_swagger_view(title='Micromerce API')
