@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import (MobileTicket)
+from .models import (MobileTicket, MobileTicketReply)
 
 
 
@@ -20,4 +20,19 @@ class ListMobileTicketSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField()
     upload_at = serializers.DateTimeField()
     due_date = serializers.DateTimeField()
+
+
+class MobileTicketReplySerializer(serializers.ModelSerializer):
+
+    class Meta:
+         model=MobileTicketReply
+         fields='__all__'
+
+class  ListMobileTicketReplySerializer(serializers.ModelSerializer):
+    message = serializers.CharField(max_length=100)
+    send_by = serializers.CharField(max_length=20)
+    file_path = serializers.CharField(max_length=100)
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
+    mobile_ticket_id =serializers.IntegerField()
 

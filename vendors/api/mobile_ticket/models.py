@@ -18,3 +18,14 @@ class MobileTicket(models.Model):
 
     #dependent
     #vendor_name
+class  MobileTicketReply(models.Model):
+    message=models.CharField(max_length=100)
+    send_by=models.CharField(max_length=20)
+    file_path=models.CharField(max_length=100)
+    created_at=models.DateTimeField()
+    updated_at=models.DateTimeField()
+
+
+    #dependent on mobile ticket
+    # Ticket_id
+
