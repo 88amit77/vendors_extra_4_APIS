@@ -9,13 +9,13 @@ class VendorDocumentAuthSerializer(serializers.ModelSerializer):
 
 
 class ListVendorDocumentAuthSerializer(serializers.Serializer):
-    agreement_id = serializers.CharField(max_length=30, blank=True, null=True)
-    brand_id =serializers.IntegerField(blank=True, null=True)
+    agreement_id = serializers.CharField(max_length=30, allowNone=True)
+    brand_id =serializers.IntegerField(allowNone=True)
     vendor_id = serializers.IntegerField()
     type = serializers.CharField(max_length=30)
-    file = serializers.FileField(upload_to='uploads/vendor_docs/')
-    start_date =serializers.DateTimeField(auto_now_add=True)
+    file = serializers.FileField()
+    start_date =serializers.DateTimeField()
     expiry_date =serializers.DateTimeField()
-    updated_at =serializers.DateTimeField(auto_now=True)
+    updated_at =serializers.DateTimeField()
     is_notification_delivered =serializers.BooleanField()
-    ip_address =serializers.CharField(max_length=35, blank=True, null=True)
+    ip_address =serializers.CharField(max_length=35, allowNone=True)
