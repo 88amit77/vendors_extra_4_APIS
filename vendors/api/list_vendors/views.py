@@ -63,7 +63,7 @@ class VendorListViewSet(viewsets.ViewSet):
             serializer = ListVendorSerializer(data, many=True)
             new_data = serializer.data
             for obj in serializer.data:
-                if len(columns > 0):
+                if len(columns) > 0:
                     columns.append('user_id')
                     columns.append('user_name')
                     new_data = {key: value for (key, value) in obj.items() if key in columns}
