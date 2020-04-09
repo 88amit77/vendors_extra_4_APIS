@@ -20,6 +20,7 @@ class VendorListViewSet(viewsets.ViewSet):
             for j in range(len(auth_user['groups'][i]['permissions'])):
                 permissions.append(auth_user['groups'][i]['permissions'][j]['codename'])
         permissions = set(permissions)
+        columns = request.data['columns'].split(',')
         vendors = requests.get('http://localhost:8001/vendors/').json()
         data = []
         header = {
@@ -35,17 +36,12 @@ class VendorListViewSet(viewsets.ViewSet):
             'marketing_incharge_name': 'Markettig Incharge Name',
             'brand_coordinators_name': 'Brand Coordinator Name'
         }
+        selected_headers = {i: columns[i] for i in range(0, len(columns))}
         for i in range(len(vendors)):
-            item = {
-                'vendor_id': vendors[i]['id'],
-                'user_id': vendors[i]['user_id'],
-                'vendor_name': vendors[i]['vendor_name'],
-                'phone': vendors[i]['mobile'],
-                'vendor_code': '000',
-                'vendor_type': vendors[i]['vendor_type'],
-                'current_status': 'New',
-                'currency': 'INR'
-            }
+            item = {'user_id': vendors[i]['user_id'], 'vendor_id': vendors[i]['id'],
+                    'vendor_name': vendors[i]['vendor_name'], 'phone': vendors[i]['mobile'], 'vendor_code': '000',
+                    'vendor_type': vendors[i]['vendor_type'], 'current_status': 'New', 'currency': 'INR'}
+
             user_response = dict(
                 requests.get('http://13.232.166.20/users/' + str(vendors[i]['user_id']) + '/', headers={'authorization': token}).json())
             item['user_name'] = user_response['username']
@@ -59,10 +55,16 @@ class VendorListViewSet(viewsets.ViewSet):
             data.append(item)
         if len(data):
             serializer = ListVendorSerializer(data, many=True)
-            return Response({'header': header, 'data': serializer.data, 'message': 'Vendors fetched successfully'})
+
+            for obj in serializer.data:
+                columns.append('user_id')
+                columns.append('user_name')
+                new_data = {key: value for (key, value) in obj.items() if key in columns}
+
+            return Response({'header': header, 'selected_headers': selected_headers, 'data': new_data, 'message': 'Vendors fetched successfully'})
         else:
             data = []
-            return Response({'header': header, 'data': data, 'message': 'No vendor found'})
+            return Response({'header': header, 'selected_headers': selected_headers, 'data': data, 'message': 'No vendor found'})
 
 
 class NewVendorDetailsViewSet(viewsets.ModelViewSet):
