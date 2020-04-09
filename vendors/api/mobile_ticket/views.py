@@ -58,6 +58,7 @@ class MobileTicketReplyViewSet(viewsets.ModelViewSet):
 class MobileTicketReplyListViewSet(viewsets.ViewSet):
     def list(self, request):
         token = request.META.get('HTTP_AUTHORIZATION')
+
         mobile_ticket_reply = requests.get('http://localhost:8001/mobile_ticket_reply/').json()
         data = []
         header = {
