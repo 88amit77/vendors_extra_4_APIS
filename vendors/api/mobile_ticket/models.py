@@ -8,8 +8,8 @@ class MobileTicket(models.Model):
     department_name=models.CharField(max_length=20)
     status=models.BinaryField()
     created_by=models.CharField(max_length=25)
-    created_at=models.DateTimeField()
-    upload_at=models.DateTimeField()
+    created_at=models.DateTimeField(auto_now_add=True)
+    upload_at=models.DateTimeField(auto_now_add=True)
     due_date=models.DateTimeField()
 
 
@@ -22,7 +22,7 @@ class  MobileTicketReply(models.Model):
     message=models.CharField(max_length=100)
     send_by=models.CharField(max_length=20)
     file_path=models.CharField(max_length=100)
-    created_at=models.DateTimeField()
+    created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField()
 
 
