@@ -13,7 +13,7 @@ services:
   nginx:
     build: ./web
     ports:
-      - 80:80
+      - 8081:80
     links:
       - vendors_web
     depends_on:
