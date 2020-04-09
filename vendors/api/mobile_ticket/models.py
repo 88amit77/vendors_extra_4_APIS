@@ -11,6 +11,7 @@ class MobileTicket(models.Model):
     created_by=models.CharField(max_length=25)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now_add=True)
+    due_date = models.DateTimeField()
 
 
 

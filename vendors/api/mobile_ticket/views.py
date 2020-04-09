@@ -31,6 +31,7 @@ class MobileTicketListViewSet(viewsets.ViewSet):
             'created_by':'created_by',
             'created_at':'created_at',
             'updated_at': 'updated_at',
+            'due_date': 'due_date',
 
             }
 
@@ -44,6 +45,7 @@ class MobileTicketListViewSet(viewsets.ViewSet):
                     'created_by':mobile_ticket[i]['created_by'],
                     'created_at':mobile_ticket[i]['created_at'],
                     'updated_at':mobile_ticket[i]['updated_at'],
+                    'due_date': mobile_ticket[i]['due_date'],
 
                     }
             vendors_response = dict(
@@ -86,6 +88,7 @@ class MobileTicketReplyListViewSet(viewsets.ViewSet):
             'file_path':'file_path',
             'created_at':'created_at',
             'updated_at':'updated_at',
+
                  }
 
 
@@ -97,6 +100,7 @@ class MobileTicketReplyListViewSet(viewsets.ViewSet):
                    'file_path': mobile_ticket_reply[i]['file_path'],
                    'created_at': mobile_ticket_reply[i][ 'created_at'],
                    'updated_at' : mobile_ticket_reply[i]['updated_at'],
+
 
 
                     }
