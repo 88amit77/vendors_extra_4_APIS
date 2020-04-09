@@ -13,42 +13,55 @@ class MobileTicketDetailsViewSet(viewsets.ModelViewSet):
 class MobileTicketListViewSet(viewsets.ViewSet):
     def list(self, request):
         token = request.META.get('HTTP_AUTHORIZATION')
+        if 'columns' in request.data:
+            columns = request.data['columns'].split(',')
+            selected_headers = {i: columns[i] for i in range(0, len(columns))}
+        else:
+            columns = []
+            selected_headers = {}
         mobile_ticket = requests.get('http://localhost:8001/mobile_ticket/').json()
         data = []
         header = {
-            'brand_coordinator': 'brand_coordinator',
+            'ticket_id':'mobile_ticket_id',
+            'brand_coordinator_id': 'brand_coordinator_id',
+            'vendor_name': 'vendor_name',
             'title':'title',
             'department_name':'department_name',
             'status':'status',
             'created_by':'created_by',
             'created_at':'created_at',
-            'upload_at': 'upload_at',
-            'due_date': 'due_date',
-            'vendor_name':'vendor_name',
+            'updated_at': 'updated_at',
 
-        }
+            }
+
         for i in range(len(mobile_ticket)):
             item = {
                     'mobile_ticket_id':mobile_ticket[i]['id'],
-                    'brand_coordinator': mobile_ticket[i]['brand_coordinator'],
+                    'brand_coordinator_id': mobile_ticket[i]['brand_coordinator_id'],
                     'title':mobile_ticket[i]['title'],
                     'department_name':mobile_ticket[i]['department_name'],
                     'status':mobile_ticket[i]['status'],
                     'created_by':mobile_ticket[i]['created_by'],
                     'created_at':mobile_ticket[i]['created_at'],
-                    'upload_at':mobile_ticket[i]['upload_at'],
-                    'due_date':mobile_ticket[i]['due_date']
+                    'updated_at':mobile_ticket[i]['updated_at'],
+
                     }
             vendors_response = dict(
                 requests.get('http://13.232.166.20/vendors/' + str(mobile_ticket[i]['id']) + '/', headers={'authorization': token}).json())
             item['vendor_name'] = vendors_response['vendor_name']
             data.append(item)
         if len(data):
-            serializer = ListMobileTicketSerializer(data, many=True)
-            return Response({'header': header, 'data': serializer.data, 'message': 'mobile_ticket fetched successfully'})
+            serializer =ListMobileTicketSerializer(data, many=True)
+            new_data=serializer.data
+            for obj in serializer.data:
+                if len(columns)>0:
+                    columns.append('id')
+                    columns.append('vendor_name')
+                    new_data= {key: value for (key, value) in obj.items() if key in columns}
+            return Response({'header': header, 'selected_headers': selected_headers, 'data': new_data, 'message': 'mobile_ticket fetched successfully'})
         else:
             data = []
-            return Response({'header': header, 'data': data, 'message': 'No mobile_ticket found'})
+            return Response({'header': header,'selected_headers': selected_headers, 'data': data, 'message': 'No mobile_ticket found'})
 
 class MobileTicketReplyViewSet(viewsets.ModelViewSet):
 
@@ -58,19 +71,24 @@ class MobileTicketReplyViewSet(viewsets.ModelViewSet):
 class MobileTicketReplyListViewSet(viewsets.ViewSet):
     def list(self, request):
         token = request.META.get('HTTP_AUTHORIZATION')
-
+        if 'columns' in request.data:
+            columns = request.data['columns'].split(',')
+            selected_headers = {i: columns[i] for i in range(0, len(columns))}
+        else:
+            columns = []
+            selected_headers = {}
         mobile_ticket_reply = requests.get('http://localhost:8001/mobile_ticket_reply/').json()
         data = []
         header = {
-
+            'Ticket_id': 'ticket_id',
             'message':'message',
             'send_by': 'send_by',
             'file_path':'file_path',
             'created_at':'created_at',
             'updated_at':'updated_at',
-            'mobile_ticket_id':'id'
+                 }
 
-        }
+
         for i in range(len(mobile_ticket_reply)):
             item = {
                    'mobile_ticket_reply_id': mobile_ticket_reply[i]['id'],
@@ -84,11 +102,17 @@ class MobileTicketReplyListViewSet(viewsets.ViewSet):
                     }
             mobile_ticket_response = dict(
                 requests.get('http://13.232.166.20/mobile_ticket/' + str(mobile_ticket_reply[i]['id']) + '/', headers={'authorization': token}).json())
-            item['mobile_ticket_id'] = mobile_ticket_response['id']
+            item['ticket_id'] = mobile_ticket_response['ticket_id']
             data.append(item)
         if len(data):
-            serializer = ListMobileTicketReplySerializer(data, many=True)
-            return Response({'header': header, 'data': serializer.data, 'message': 'mobile_ticket_reply fetched successfully'})
+            serializer =ListMobileTicketReplySerializer(data, many=True)
+            new_data=serializer.data
+            for obj in serializer.data:
+                if len(columns)>0:
+                    columns.append('id')
+                    columns.append('ticket_id')
+                    new_data= {key: value for (key, value) in obj.items() if key in columns}
+            return Response({'header': header, 'selected_headers': selected_headers, 'data': new_data, 'message': 'mobile_ticket_reply fetched successfully'})
         else:
             data = []
-            return Response({'header': header, 'data': data, 'message': 'No mobile_ticket_reply found'})
+            return Response({'header': header,'selected_headers': selected_headers, 'data': data, 'message': 'No mobile_ticket_reply found'})
