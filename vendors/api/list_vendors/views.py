@@ -20,7 +20,13 @@ class VendorListViewSet(viewsets.ViewSet):
             for j in range(len(auth_user['groups'][i]['permissions'])):
                 permissions.append(auth_user['groups'][i]['permissions'][j]['codename'])
         permissions = set(permissions)
-        columns = request.data['columns'].split(',')
+        if 'columns' in request.data:
+            columns = request.data['columns'].split(',')
+            selected_headers = {i: columns[i] for i in range(0, len(columns))}
+        else:
+            columns = []
+            selected_headers = {}
+
         vendors = requests.get('http://localhost:8001/vendors/').json()
         data = []
         header = {
@@ -36,7 +42,7 @@ class VendorListViewSet(viewsets.ViewSet):
             'marketing_incharge_name': 'Markettig Incharge Name',
             'brand_coordinators_name': 'Brand Coordinator Name'
         }
-        selected_headers = {i: columns[i] for i in range(0, len(columns))}
+
         for i in range(len(vendors)):
             item = {'user_id': vendors[i]['user_id'], 'vendor_id': vendors[i]['id'],
                     'vendor_name': vendors[i]['vendor_name'], 'phone': vendors[i]['mobile'], 'vendor_code': '000',
@@ -55,11 +61,12 @@ class VendorListViewSet(viewsets.ViewSet):
             data.append(item)
         if len(data):
             serializer = ListVendorSerializer(data, many=True)
-
+            new_data = serializer.data
             for obj in serializer.data:
-                columns.append('user_id')
-                columns.append('user_name')
-                new_data = {key: value for (key, value) in obj.items() if key in columns}
+                if len(columns > 0):
+                    columns.append('user_id')
+                    columns.append('user_name')
+                    new_data = {key: value for (key, value) in obj.items() if key in columns}
 
             return Response({'header': header, 'selected_headers': selected_headers, 'data': new_data, 'message': 'Vendors fetched successfully'})
         else:
