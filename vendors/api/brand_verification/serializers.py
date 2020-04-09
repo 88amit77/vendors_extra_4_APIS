@@ -19,3 +19,7 @@ class ListVendorDocumentAuthSerializer(serializers.Serializer):
     updated_at =serializers.DateTimeField()
     is_notification_delivered =serializers.BooleanField()
     ip_address =serializers.CharField(max_length=35)
+
+
+
+

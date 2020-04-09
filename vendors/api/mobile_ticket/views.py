@@ -15,6 +15,18 @@ class MobileTicketListViewSet(viewsets.ViewSet):
         token = request.META.get('HTTP_AUTHORIZATION')
         mobile_ticket = requests.get('http://localhost:8001/mobile_ticket/').json()
         data = []
+        header = {
+            'brand_coordinator': 'brand_coordinator',
+            'title':'title',
+            'department_name':'department_name',
+            'status':'status',
+            'created_by':'created_by',
+            'created_at':'created_at',
+            'upload_at': 'upload_at',
+            'due_date': 'due_date',
+            'vendor_name':'vendor_name',
+
+        }
         for i in range(len(mobile_ticket)):
             item = {
                     'mobile_ticket_id':mobile_ticket[i]['id'],
@@ -33,10 +45,10 @@ class MobileTicketListViewSet(viewsets.ViewSet):
             data.append(item)
         if len(data):
             serializer = ListMobileTicketSerializer(data, many=True)
-            return Response(serializer.data)
+            return Response({'header': header, 'data': serializer.data, 'message': 'mobile_ticket fetched successfully'})
         else:
             data = []
-            return Response(data)
+            return Response({'header': header, 'data': data, 'message': 'No mobile_ticket found'})
 
 class MobileTicketReplyViewSet(viewsets.ModelViewSet):
 
@@ -46,8 +58,19 @@ class MobileTicketReplyViewSet(viewsets.ModelViewSet):
 class MobileTicketReplyListViewSet(viewsets.ViewSet):
     def list(self, request):
         token = request.META.get('HTTP_AUTHORIZATION')
+
         mobile_ticket_reply = requests.get('http://localhost:8001/mobile_ticket_reply/').json()
         data = []
+        header = {
+
+            'message':'message',
+            'send_by': 'send_by',
+            'file_path':'file_path',
+            'created_at':'created_at',
+            'updated_at':'updated_at',
+            'mobile_ticket_id':'id'
+
+        }
         for i in range(len(mobile_ticket_reply)):
             item = {
                    'mobile_ticket_reply_id': mobile_ticket_reply[i]['id'],
@@ -65,7 +88,7 @@ class MobileTicketReplyListViewSet(viewsets.ViewSet):
             data.append(item)
         if len(data):
             serializer = ListMobileTicketReplySerializer(data, many=True)
-            return Response(serializer.data)
+            return Response({'header': header, 'data': serializer.data, 'message': 'mobile_ticket_reply fetched successfully'})
         else:
             data = []
-            return Response(data)
+            return Response({'header': header, 'data': data, 'message': 'No mobile_ticket_reply found'})

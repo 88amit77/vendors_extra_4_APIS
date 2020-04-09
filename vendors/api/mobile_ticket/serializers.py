@@ -12,7 +12,7 @@ class MobileTicketSerializer(serializers.ModelSerializer):
 
 class ListMobileTicketSerializer(serializers.Serializer):
     brand_coordinator = serializers.CharField(max_length=25)
-    vendor_name=serializers.CharField(max_length=30)
+    vendor_name = serializers.CharField(max_length=30)
     title = serializers.CharField(max_length=50)
     department_name = serializers.CharField(max_length=20)
     status = serializers.IntegerField()
