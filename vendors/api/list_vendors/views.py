@@ -65,13 +65,14 @@ class VendorListViewSet(viewsets.ViewSet):
         new_data = []
         if len(data):
             serializer = ListVendorSerializer(data, many=True)
-            for obj in serializer.data:
-                if len(columns) > 0:
+            if len(columns) > 0:
+                for obj in serializer.data:
                     columns.append('user_id')
                     columns.append('user_name')
                     new_item = {key: value for (key, value) in obj.items() if key in columns}
-                    print(new_item)
                     new_data.append(new_item)
+            else:
+                new_data = serializer.data
             return Response({'count': vendors['count'], 'next': vendors['next'], 'previous': vendors['previous'],
                              'header': header, 'selected_headers': selected_headers, 'data': new_data,
                              'message': 'Vendors fetched successfully'})
