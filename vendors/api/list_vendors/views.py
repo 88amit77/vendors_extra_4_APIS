@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from .serializers import ListVendorSerializer, NewVendorDetailsSerializer
 from .models import NewVendorDetails
 from rest_framework.response import Response
+from rest_framework.pagination import LimitOffsetPagination,PageNumberPagination
 import requests
 
 
@@ -9,6 +10,8 @@ class VendorListViewSet(viewsets.ViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
+    pagination_class = PageNumberPagination
+
     def list(self, request):
         token = request.META.get('HTTP_AUTHORIZATION')
         auth_user = requests.get('http://13.232.166.20/auth/users/me/', headers={'authorization': token}).json()
@@ -20,7 +23,13 @@ class VendorListViewSet(viewsets.ViewSet):
             for j in range(len(auth_user['groups'][i]['permissions'])):
                 permissions.append(auth_user['groups'][i]['permissions'][j]['codename'])
         permissions = set(permissions)
-        columns = request.data['columns'].split(',')
+        if 'columns' in request.data:
+            columns = request.data['columns'].split(',')
+            selected_headers = {i: columns[i] for i in range(0, len(columns))}
+        else:
+            columns = []
+            selected_headers = {}
+
         vendors = requests.get('http://localhost:8001/vendors/').json()
         data = []
         header = {
@@ -36,35 +45,40 @@ class VendorListViewSet(viewsets.ViewSet):
             'marketing_incharge_name': 'Markettig Incharge Name',
             'brand_coordinators_name': 'Brand Coordinator Name'
         }
-        selected_headers = {i: columns[i] for i in range(0, len(columns))}
-        for i in range(len(vendors)):
-            item = {'user_id': vendors[i]['user_id'], 'vendor_id': vendors[i]['id'],
-                    'vendor_name': vendors[i]['vendor_name'], 'phone': vendors[i]['mobile'], 'vendor_code': '000',
-                    'vendor_type': vendors[i]['vendor_type'], 'current_status': 'New', 'currency': 'INR'}
+        vendor_data = vendors['results']
+        for i in range(len(vendor_data)):
+            item = {'user_id': vendor_data[i]['user_id'], 'vendor_id': vendor_data[i]['id'],
+                    'vendor_name': vendor_data[i]['vendor_name'], 'phone': vendor_data[i]['mobile'], 'vendor_code': '000',
+                    'vendor_type': vendor_data[i]['vendor_type'], 'current_status': 'New', 'currency': 'INR'}
 
             user_response = dict(
-                requests.get('http://13.232.166.20/users/' + str(vendors[i]['user_id']) + '/', headers={'authorization': token}).json())
+                requests.get('http://13.232.166.20/users/' + str(vendor_data[i]['user_id']) + '/', headers={'authorization': token}).json())
             item['user_name'] = user_response['username']
             item['email'] = user_response['email']
             marketing_incharge_response = dict(
-                requests.get('http://13.232.166.20/users/' + str(vendors[i]['marketing_incharge_id']) + '/', headers={'authorization': token}).json())
+                requests.get('http://13.232.166.20/users/' + str(vendor_data[i]['marketing_incharge_id']) + '/', headers={'authorization': token}).json())
             brand_analyst_response = dict(
-                requests.get('http://13.232.166.20/users/' + str(vendors[i]['brand_coordinators_id']) + '/', headers={'authorization': token}).json())
+                requests.get('http://13.232.166.20/users/' + str(vendor_data[i]['brand_coordinators_id']) + '/', headers={'authorization': token}).json())
             item['marketing_incharge_name'] = marketing_incharge_response['username']
             item['brand_coordinators_name'] = brand_analyst_response['username']
             data.append(item)
+        new_data = []
         if len(data):
             serializer = ListVendorSerializer(data, many=True)
-
-            for obj in serializer.data:
-                columns.append('user_id')
-                columns.append('user_name')
-                new_data = {key: value for (key, value) in obj.items() if key in columns}
-
-            return Response({'header': header, 'selected_headers': selected_headers, 'data': new_data, 'message': 'Vendors fetched successfully'})
+            if len(columns) > 0:
+                for obj in serializer.data:
+                    columns.append('user_id')
+                    columns.append('user_name')
+                    new_item = {key: value for (key, value) in obj.items() if key in columns}
+                    new_data.append(new_item)
+            else:
+                new_data = serializer.data
+            return Response({'count': vendors['count'], 'next': vendors['next'], 'previous': vendors['previous'],
+                             'header': header, 'selected_headers': selected_headers, 'data': new_data,
+                             'message': 'Vendors fetched successfully'})
         else:
             data = []
-            return Response({'header': header, 'selected_headers': selected_headers, 'data': data, 'message': 'No vendor found'})
+            return Response({'count': 0, 'next': None, 'previous': None, 'header': header, 'selected_headers': selected_headers, 'data': data, 'message': 'No vendor found'})
 
 
 class NewVendorDetailsViewSet(viewsets.ModelViewSet):
