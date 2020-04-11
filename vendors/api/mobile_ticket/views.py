@@ -5,11 +5,15 @@ from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination,PageNumberPagination
 import requests
 
+class MobileTicketDetailsViewSetPagination(LimitOffsetPagination):
+    default_limit = 2
+    max_limit =3
 
 class MobileTicketDetailsViewSet(viewsets.ModelViewSet):
 
     queryset = MobileTicket.objects.all()
     serializer_class = MobileTicketSerializer
+    pagination_class = MobileTicketDetailsViewSetPagination
 
 class MobileTicketListViewSet(viewsets.ViewSet):
     pagination_class = PageNumberPagination
@@ -74,10 +78,17 @@ class MobileTicketListViewSet(viewsets.ViewSet):
             return Response(
                 {'count': 0, 'next': None, 'previous': None, 'header': header, 'selected_headers': selected_headers,
                  'data': data, 'message': 'No mobile_ticket found'})
+
+class MobileTicketReplyViewSetPagination(LimitOffsetPagination):
+    default_limit = 2
+    max_limit =3
+
+
 class MobileTicketReplyViewSet(viewsets.ModelViewSet):
 
     queryset = MobileTicketReply.objects.all()
     serializer_class = MobileTicketReplySerializer
+    pagination_class = MobileTicketReplyViewSetPagination
 
 class MobileTicketReplyListViewSet(viewsets.ViewSet):
     pagination_class = PageNumberPagination

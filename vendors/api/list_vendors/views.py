@@ -80,10 +80,13 @@ class VendorListViewSet(viewsets.ViewSet):
             data = []
             return Response({'count': 0, 'next': None, 'previous': None, 'header': header, 'selected_headers': selected_headers, 'data': data, 'message': 'No vendor found'})
 
-
+class NewVendorDetailsViewSetPagination(LimitOffsetPagination):
+    default_limit = 2
+    max_limit =3
 class NewVendorDetailsViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
     queryset = NewVendorDetails.objects.all()
     serializer_class = NewVendorDetailsSerializer
+    pagination_class =NewVendorDetailsViewSetPagination

@@ -5,11 +5,13 @@ from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination,PageNumberPagination
 import requests
 
-
+class VendorDocumentAuthViewSetPagination(LimitOffsetPagination):
+    default_limit = 2
+    max_limit =3
 class VendorDocumentAuthViewSet(viewsets.ModelViewSet):
     queryset = VendorDocumentAuth.objects.all()
     serializer_class = VendorDocumentAuthSerializer
-
+    pagination_class =VendorDocumentAuthViewSetPagination
 
 class VendorDocumentAuthListViewSet(viewsets.ViewSet):
     pagination_class = PageNumberPagination
