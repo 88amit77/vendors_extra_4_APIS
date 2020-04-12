@@ -4,13 +4,17 @@ from .models import MobileTicket,MobileTicketReply
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination,PageNumberPagination
 import requests
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 class MobileTicketDetailsViewSetPagination(LimitOffsetPagination):
     default_limit = 2
     max_limit =3
 
 class MobileTicketDetailsViewSet(viewsets.ModelViewSet):
-
+    search_fields = ['ticket_id', 'brand_coordinator_id', 'vendor_name', 'title','department_name','status','created_by','created_at','updated_at','due_date']
+    ordering_fields = ['created_at','updated_at','due_date']
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     queryset = MobileTicket.objects.all()
     serializer_class = MobileTicketSerializer
     pagination_class = MobileTicketDetailsViewSetPagination
@@ -85,7 +89,9 @@ class MobileTicketReplyViewSetPagination(LimitOffsetPagination):
 
 
 class MobileTicketReplyViewSet(viewsets.ModelViewSet):
-
+    search_fields = ['message', 'send_by', 'file_path', 'created_at', 'updated_at', 'ticket_id']
+    ordering_fields = ['created_at', 'updated_at']
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     queryset = MobileTicketReply.objects.all()
     serializer_class = MobileTicketReplySerializer
     pagination_class = MobileTicketReplyViewSetPagination

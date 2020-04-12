@@ -4,11 +4,16 @@ from .models import VendorDocumentAuth
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination,PageNumberPagination
 import requests
+#from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 class VendorDocumentAuthViewSetPagination(LimitOffsetPagination):
     default_limit = 2
     max_limit =3
 class VendorDocumentAuthViewSet(viewsets.ModelViewSet):
+    search_fields = ['agreement_id', 'brand_id', 'vendor_id', 'type','file','start_date','expiry_date','updated_at','is_notification_delivered','ip_address']
+    ordering_fields = ['start_date','expiry_date','updated_at']
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     queryset = VendorDocumentAuth.objects.all()
     serializer_class = VendorDocumentAuthSerializer
     pagination_class =VendorDocumentAuthViewSetPagination

@@ -4,6 +4,8 @@ from .models import NewVendorDetails
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination,PageNumberPagination
 import requests
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 
 class VendorListViewSet(viewsets.ViewSet):
@@ -87,6 +89,12 @@ class NewVendorDetailsViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
+    search_fields = ['brand_id', 'user_id', 'vendor_name', 'address','city','state','pincode','mobile','optional_phone','country','marketing_incharge_id','brand_coordinators_id','pan'
+        ,'gst_input','portal_accepted_for_listing','no_multi_portal_fee','insurance','no_storage_fee','fair_participation','amazon',' flipkart','paytm','snapdeal',
+                     ' tatacliq ',' myntra','vendor_type','state_pan','bank_name','account_number','ifsc_code','created_at','updated_at']
+
+    ordering_fields = ['created_at', 'updated_at']
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     queryset = NewVendorDetails.objects.all()
     serializer_class = NewVendorDetailsSerializer
     pagination_class =NewVendorDetailsViewSetPagination
