@@ -16,7 +16,7 @@ class ListMobileTicketSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=50)
     department_name = serializers.CharField(max_length=20)
     status = serializers.IntegerField()
-    created_by = serializers.CharField(max_length=25)
+    created_by = serializers.IntegerField()
     created_at = serializers.DateTimeField()
     upload_at = serializers.DateTimeField()
     due_date = serializers.DateTimeField()
@@ -30,7 +30,7 @@ class MobileTicketReplySerializer(serializers.ModelSerializer):
 
 class  ListMobileTicketReplySerializer(serializers.ModelSerializer):
     message = serializers.CharField(max_length=100)
-    send_by = serializers.CharField(max_length=20)
+    send_by = serializers.IntegerField()
     file_path = serializers.CharField(max_length=100)
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()

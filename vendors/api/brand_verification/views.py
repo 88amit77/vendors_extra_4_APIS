@@ -2,15 +2,24 @@ from rest_framework import viewsets
 from .serializers import VendorDocumentAuthSerializer,ListVendorDocumentAuthSerializer
 from .models import VendorDocumentAuth
 from rest_framework.response import Response
+from rest_framework.pagination import LimitOffsetPagination,PageNumberPagination
 import requests
+#from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
-
+class VendorDocumentAuthViewSetPagination(LimitOffsetPagination):
+    default_limit = 2
+    max_limit =3
 class VendorDocumentAuthViewSet(viewsets.ModelViewSet):
+    search_fields = ['agreement_id', 'brand_id', 'vendor_id', 'type','file','start_date','expiry_date','updated_at','is_notification_delivered','ip_address']
+    ordering_fields = ['start_date','expiry_date','updated_at']
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     queryset = VendorDocumentAuth.objects.all()
     serializer_class = VendorDocumentAuthSerializer
-
+    pagination_class =VendorDocumentAuthViewSetPagination
 
 class VendorDocumentAuthListViewSet(viewsets.ViewSet):
+    pagination_class = PageNumberPagination
     def list(self, request):
         token = request.META.get('HTTP_AUTHORIZATION')
         if 'columns' in request.data:
@@ -34,33 +43,41 @@ class VendorDocumentAuthListViewSet(viewsets.ViewSet):
             'brand_id': 'brand_id',
             'vendor_id':'vendor_id'
            }
-        for i in range(len(brand_verification)):
+        brand_verification_data = brand_verification['results']
+        for i in range(len(brand_verification_data)):
             item = {
-                    'brand_verification_id':brand_verification[i]['id'],
-                    'agreement_id' : brand_verification[i]['agreement_id'],
-                    'type' :brand_verification[i]['type'],
-                    'file' :brand_verification[i]['file'],
-                    'start_date' :brand_verification[i]['start_date'],
-                    'expiry_date' :brand_verification[i]['expiry_date'],
-                    'updated_at' :brand_verification[i]['updated_at'],
-                    'is_notification_delivered' :brand_verification[i][ 'is_notification_delivered'],
-                    'ip_address' :brand_verification[i]['ip_address'],
+                    'brand_verification_id':brand_verification_data[i]['id'],
+                    'agreement_id' : brand_verification_data[i]['agreement_id'],
+                    'type' :brand_verification_data[i]['type'],
+                    'file' :brand_verification_data[i]['file'],
+                    'start_date' :brand_verification_data[i]['start_date'],
+                    'expiry_date' :brand_verification_data[i]['expiry_date'],
+                    'updated_at' :brand_verification_data[i]['updated_at'],
+                    'is_notification_delivered' :brand_verification_data[i][ 'is_notification_delivered'],
+                    'ip_address' :brand_verification_data[i]['ip_address'],
                     }
             vendors_response = dict(
-                requests.get('http://13.232.166.20/vendors/' + str(brand_verification[i]['id']) + '/', headers={'authorization': token}).json())
+                requests.get('http://13.232.166.20/vendors/' + str(brand_verification_data[i]['id']) + '/', headers={'authorization': token}).json())
             item['brand_id'] = vendors_response['brand_id']
             item['vendor_id'] = vendors_response['vendor_id']
             data.append(item)
+        new_data = []
         if len(data):
             serializer =ListVendorDocumentAuthSerializer(data, many=True)
-            new_data=serializer.data
-            for obj in serializer.data:
-                if len(columns)>0:
+            if len(columns) > 0:
+                for obj in serializer.data:
                     columns.append('id')
                     columns.append('brand_id')
                     columns.append('vendor_id')
-                    new_data= {key: value for (key, value) in obj.items() if key in columns}
-            return Response({'header': header, 'selected_headers': selected_headers, 'data': new_data, 'message': 'brand_verification fetched successfully'})
+                    new_item = {key: value for (key, value) in obj.items() if key in columns}
+                    new_data.append(new_item)
+                else:
+                    new_data = serializer.data
+                return Response({'count': brand_verification['count'], 'next': brand_verification['next'], 'previous': brand_verification['previous'],
+                                 'header': header, 'selected_headers': selected_headers, 'data': new_data,
+                                 'message': 'brand_verification fetched successfully'})
         else:
             data = []
-            return Response({'header': header,'selected_headers': selected_headers, 'data': data, 'message': 'No brand_verification found'})
+            return Response(
+                {'count': 0, 'next': None, 'previous': None, 'header': header, 'selected_headers': selected_headers,
+                 'data': data, 'message': 'No brand_verification found'})
