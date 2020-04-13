@@ -4,7 +4,6 @@ from .models import MobileTicket,MobileTicketReply
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination,PageNumberPagination
 import requests
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 
 class MobileTicketDetailsViewSetPagination(LimitOffsetPagination):
