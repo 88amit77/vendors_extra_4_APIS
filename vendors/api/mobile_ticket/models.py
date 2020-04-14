@@ -2,7 +2,6 @@ from django.db import models
 
 class MobileTicket(models.Model):
     '''   model for mobile_ticket '''
-    ticket_id=models.IntegerField()
     brand_coordinator_id=models.IntegerField()
     vendor_name=models.CharField(max_length=30)
     title=models.CharField(max_length=50)
