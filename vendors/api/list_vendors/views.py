@@ -2,15 +2,18 @@ from rest_framework import viewsets
 from .serializers import ListVendorSerializer, NewVendorDetailsSerializer
 from .models import NewVendorDetails
 from rest_framework.response import Response
-from rest_framework.pagination import LimitOffsetPagination,PageNumberPagination
+from rest_framework.pagination import PageNumberPagination
 import requests
+
+
+class CustomPageNumberPagination(PageNumberPagination):
+    page_size_query_param = 'page_size'
 
 
 class VendorListViewSet(viewsets.ViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    pagination_class = PageNumberPagination
 
     def list(self, request):
         token = request.META.get('HTTP_AUTHORIZATION')
@@ -23,6 +26,7 @@ class VendorListViewSet(viewsets.ViewSet):
             for j in range(len(auth_user['groups'][i]['permissions'])):
                 permissions.append(auth_user['groups'][i]['permissions'][j]['codename'])
         permissions = set(permissions)
+
         if 'columns' in request.data:
             columns = request.data['columns'].split(',')
             selected_headers = {i: columns[i] for i in range(0, len(columns))}
@@ -30,7 +34,16 @@ class VendorListViewSet(viewsets.ViewSet):
             columns = []
             selected_headers = {}
 
-        vendors = requests.get('http://localhost:8001/vendors/').json()
+        if 'page' in request.query_params:
+            page = request.query_params['page']
+        else:
+            page = 1
+        if 'page_size' in request.query_params:
+            page_size = request.query_params['page_size']
+        else:
+            page_size = 20
+        vendors = requests.get('http://localhost:8001/vendors/?page=' + str(page) + '&page_size='+str(page_size)).json()
+
         data = []
         header = {
             'user_id': 'User Id',
@@ -73,7 +86,13 @@ class VendorListViewSet(viewsets.ViewSet):
                     new_data.append(new_item)
             else:
                 new_data = serializer.data
-            return Response({'count': vendors['count'], 'next': vendors['next'], 'previous': vendors['previous'],
+            next_link = None
+            prev_link = None
+            if vendors['next'] is not None:
+                next_link = '/list_vendors/?' + vendors['next'].split('?')[1]
+            if vendors['previous'] is not None:
+                prev_link = '/list_vendors/?' + vendors['previous'].split('?')[1]
+            return Response({'count': vendors['count'], 'next': next_link, 'previous': prev_link,
                              'header': header, 'selected_headers': selected_headers, 'data': new_data,
                              'message': 'Vendors fetched successfully'})
         else:
@@ -85,5 +104,6 @@ class NewVendorDetailsViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-    queryset = NewVendorDetails.objects.all()
+    queryset = NewVendorDetails.objects.order_by('-id')
     serializer_class = NewVendorDetailsSerializer
+    pagination_class = CustomPageNumberPagination
