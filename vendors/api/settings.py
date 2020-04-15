@@ -26,7 +26,14 @@ ROOT_URLCONF = 'api.urls'
 WSGI_APPLICATION = 'api.wsgi.application'
 
 DATABASES = {
-
+	'default': {
+		'ENGINE': 'django.db.backends.postgresql_psycopg2',
+		'NAME': 'vendors',
+		'USER': 'postgres',
+		'PASSWORD': 'buymore2',
+		'HOST': 'buymore2.cegnfd8ehfoc.ap-south-1.rds.amazonaws.com',
+		'PORT': '',
+	}
 }
 
 LANGUAGE_CODE = 'en-us'
@@ -40,7 +47,7 @@ USE_L10N = True
 USE_TZ = True
 
 REST_FRAMEWORK = {
-	'UNAUTHENTICATED_USER': None
+	'UNAUTHENTICATED_USER': None,
 }
 
 TEMPLATES = [
