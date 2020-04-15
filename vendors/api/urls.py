@@ -9,6 +9,7 @@ from .list_vendors.views import (
 	MarketingInchargeFilterView,
 	BrandCoordinatorsFilterView,
 	EmailFilterView,
+	VendorNameFilterView,
 )
 from .brands.views import BrandViewSet
 from .mobile_ticket.views import (
@@ -39,6 +40,7 @@ urlpatterns = [
 	path('email/', EmailFilterView.as_view(), name='email_filter'),
 	path('marketing_incharge_name/', MarketingInchargeFilterView.as_view(), name='marketing_incharge_filter'),
 	path('brand_coordinators_name/', BrandCoordinatorsFilterView.as_view(), name='brand_analyst_filter'),
+	path('vendor_name/', VendorNameFilterView.as_view(), name='vendor_name'),
 	path("vendors/docs/", schema_view),
 ]
 
