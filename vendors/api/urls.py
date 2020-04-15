@@ -34,11 +34,11 @@ schema_view = get_swagger_view(title='Micromerce API')
 
 urlpatterns = [
 	path('', include(router.urls)),
-	path('userid_filter/', UserIdFilterView.as_view(), name='userid_filter'),
-	path('username_filter/', UsernameFilterView.as_view(), name='username_filter'),
-	path('email_filter/', EmailFilterView.as_view(), name='email_filter'),
-	path('marketing_incharge_filter/', MarketingInchargeFilterView.as_view(), name='marketing_incharge_filter'),
-	path('brand_analyst_filter/', BrandAnalystFilterView.as_view(), name='brand_analyst_filter'),
+	path('user_id/', UserIdFilterView.as_view(), name='userid_filter'),
+	path('user_name/', UsernameFilterView.as_view(), name='username_filter'),
+	path('email/', EmailFilterView.as_view(), name='email_filter'),
+	path('marketing_incharge_name/', MarketingInchargeFilterView.as_view(), name='marketing_incharge_filter'),
+	path('brand_coordinators_name/', BrandAnalystFilterView.as_view(), name='brand_analyst_filter'),
 	path("vendors/docs/", schema_view),
 ]
 
