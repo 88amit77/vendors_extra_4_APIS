@@ -1,8 +1,11 @@
+import json
 from rest_framework import viewsets
 from .serializers import ListVendorSerializer, NewVendorDetailsSerializer
 from .models import NewVendorDetails
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import filters
+from rest_framework.views import APIView
 import requests
 
 
@@ -55,7 +58,7 @@ class VendorListViewSet(viewsets.ViewSet):
             'vendor_type': 'Vendor type',
             'current_status': 'Current Status',
             'currency': 'Currency',
-            'marketing_incharge_name': 'Markettig Incharge Name',
+            'marketing_incharge_name': 'Marketing Incharge Name',
             'brand_coordinators_name': 'Brand Coordinator Name'
         }
         vendor_data = vendors['results']
@@ -107,3 +110,63 @@ class NewVendorDetailsViewSet(viewsets.ModelViewSet):
     queryset = NewVendorDetails.objects.order_by('-id')
     serializer_class = NewVendorDetailsSerializer
     pagination_class = CustomPageNumberPagination
+
+
+class UserIdFilterView(APIView):
+    def get(self, request, *args,**kwargs):
+        qs = NewVendorDetails.objects.all()
+        ids = [str(data.user_id) for data in qs]
+        id = ",".join(ids)
+        data = {'id': id}
+        if 'user_id' in request.data:
+            data['user_id'] = request.data['user_id']
+        user_ids = requests.get('http://13.232.166.20/userid_filter/', data=data).json()
+        return Response(user_ids)
+
+
+class UsernameFilterView(APIView):
+    def get(self, request, *args,**kwargs):
+        qs = NewVendorDetails.objects.all()
+        ids = [str(data.user_id) for data in qs]
+        id = ",".join(ids)
+        data = {'id': id}
+        if 'username' in request.data:
+            data['username'] = request.data['username']
+        user_ids = requests.get('http://13.232.166.20/username_filter/', data=data).json()
+        return Response(user_ids)
+
+
+class EmailFilterView(APIView):
+    def get(self, request, *args,**kwargs):
+        qs = NewVendorDetails.objects.all()
+        ids = [str(data.user_id) for data in qs]
+        id = ",".join(ids)
+        data = {'id': id}
+        if 'email' in request.data:
+            data['email'] = request.data['email']
+        user_ids = requests.get('http://13.232.166.20/email_filter/', data=data).json()
+        return Response(user_ids)
+
+
+class MarketingInchargeFilterView(APIView):
+    def get(self, request, *args,**kwargs):
+        qs = NewVendorDetails.objects.all()
+        ids = [str(data.marketing_incharge_id) for data in qs]
+        id = ",".join(ids)
+        data = {'id': id}
+        if 'username' in request.data:
+            data['username'] = request.data['username']
+        user_ids = requests.get('http://13.232.166.20/username_filter/', data=data).json()
+        return Response(user_ids)
+
+
+class BrandAnalystFilterView(APIView):
+    def get(self, request, *args,**kwargs):
+        qs = NewVendorDetails.objects.all()
+        ids = [str(data.brand_coordinators_id) for data in qs]
+        id = ",".join(ids)
+        data = {'id': id}
+        if 'username' in request.data:
+            data['username'] = request.data['username']
+        user_ids = requests.get('http://13.232.166.20/username_filter/', data=data).json()
+        return Response(user_ids)
