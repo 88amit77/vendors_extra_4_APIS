@@ -7,7 +7,7 @@ from .list_vendors.views import (
 	UserIdFilterView,
 	UsernameFilterView,
 	MarketingInchargeFilterView,
-	BrandAnalystFilterView,
+	BrandCoordinatorsFilterView,
 	EmailFilterView,
 )
 from .brands.views import BrandViewSet
@@ -38,7 +38,7 @@ urlpatterns = [
 	path('user_name/', UsernameFilterView.as_view(), name='username_filter'),
 	path('email/', EmailFilterView.as_view(), name='email_filter'),
 	path('marketing_incharge_name/', MarketingInchargeFilterView.as_view(), name='marketing_incharge_filter'),
-	path('brand_coordinators_name/', BrandAnalystFilterView.as_view(), name='brand_analyst_filter'),
+	path('brand_coordinators_name/', BrandCoordinatorsFilterView.as_view(), name='brand_analyst_filter'),
 	path("vendors/docs/", schema_view),
 ]
 

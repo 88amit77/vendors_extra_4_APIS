@@ -130,8 +130,8 @@ class UsernameFilterView(APIView):
         ids = [str(data.user_id) for data in qs]
         id = ",".join(ids)
         data = {'id': id}
-        if 'username' in request.data:
-            data['username'] = request.data['username']
+        if 'user_name' in request.data:
+            data['username'] = request.data['user_name']
         user_ids = requests.get('http://13.232.166.20/username_filter/', data=data).json()
         return Response(user_ids)
 
@@ -154,19 +154,19 @@ class MarketingInchargeFilterView(APIView):
         ids = [str(data.marketing_incharge_id) for data in qs]
         id = ",".join(ids)
         data = {'id': id}
-        if 'username' in request.data:
-            data['username'] = request.data['username']
+        if 'marketing_incharge_name' in request.data:
+            data['username'] = request.data['marketing_incharge_name']
         user_ids = requests.get('http://13.232.166.20/username_filter/', data=data).json()
         return Response(user_ids)
 
 
-class BrandAnalystFilterView(APIView):
+class BrandCoordinatorsFilterView(APIView):
     def get(self, request, *args,**kwargs):
         qs = NewVendorDetails.objects.all()
         ids = [str(data.brand_coordinators_id) for data in qs]
         id = ",".join(ids)
         data = {'id': id}
-        if 'username' in request.data:
-            data['username'] = request.data['username']
+        if 'brand_coordinators_name' in request.data:
+            data['username'] = request.data['brand_coordinators_name']
         user_ids = requests.get('http://13.232.166.20/username_filter/', data=data).json()
         return Response(user_ids)
