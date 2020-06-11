@@ -20,7 +20,7 @@ schema_view = get_schema_view(openapi.Info(
       default_version='v1',
       description="Test description",
    ), public=True, permission_classes=(permissions.AllowAny,))
-# new added APIs
+# new added Generic APIs
 router.register(r'hsn_code_rate', HsnCodeRateViewSet, basename='hsn_code_rate')
 router.register(r'purchase_invoices', PurchaseInvoicesViewSet, basename='purchase_invoices')
 router.register(r'purchase_sku_detail', PurchaseSkuDetailsViewSet, basename='purchase_sku_detail')
