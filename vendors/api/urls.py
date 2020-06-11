@@ -18,6 +18,10 @@ from .mobile_ticket.views import (
 	MobileTicketReplyViewSet,
 	MobileTicketReplyListViewSet
 )
+from .hsn_code_rate.views import HsnCodeRateViewSet
+from .purchase_invoices.views import PurchaseInvoicesViewSet
+from .purchase_sku_detail.views import PurchaseSkuDetailsViewSet
+from .weekly_other_charges.views import WeeklyOtherChargesViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -30,6 +34,13 @@ router.register(r'mobile_ticket', MobileTicketDetailsViewSet, basename='mobile_t
 router.register(r'list_mobile_ticket', MobileTicketListViewSet, basename='list_mobile_ticket')
 router.register(r'mobile_ticket_reply', MobileTicketReplyViewSet, basename='mobile_ticket_reply')
 router.register(r'list_mobile_ticket_reply', MobileTicketReplyListViewSet, basename='list_mobile_ticket_reply')
+#new added APIs
+router.register(r'hsn_code_rate', HsnCodeRateViewSet, basename='hsn_code_rate')
+router.register(r'purchase_invoices', PurchaseInvoicesViewSet, basename='purchase_invoices')
+router.register(r'purchase_sku_detail', PurchaseSkuDetailsViewSet, basename='purchase_sku_detail')
+router.register(r'weekly_other_charges', WeeklyOtherChargesViewSet, basename='weekly_other_charges')
+
+
 
 schema_view = get_swagger_view(title='Micromerce API')
 
